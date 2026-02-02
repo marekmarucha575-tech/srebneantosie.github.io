@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<title>Srebrne Antosie 2025</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #0f0f0f;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+header {
+  text-align: center;
+  height: 150px;
+  background: #111;
+}
+
+header img {
+  max-height: 120px;
+  margin-top: 15px;
+}
+
+#bgLogo {
+  position: fixed;
+  inset: 0;
+  background: url('Srebrne_Antosie_2025.png') center/cover no-repeat;
+  filter: blur(15px) brightness(0.3);
+  z-index: 0;
+}
+
+#slider {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2;
+}
+
+.category {
+  max-width: 1000px;
+  padding: 20px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 15px;
+}
+
+.card {
+  background: rgba(26,26,26,0.85);
+  padding: 10px;
+  border-radius: 10px;
+  text-align: center;
+  cursor: pointer;
+  border: 2px solid transparent;
+}
+
+.card.selected {
+  border-color: white;
+}
+
+.card.voted {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.thumb {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  border-radius: 8px;
+  background: black;
+}
+
+button {
+  margin-top: 8px;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 5px;
+  background: #b0b0b0;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+#nav {
+  text-align: center;
+  margin: 10px;
+}
+
+/* POPUP VIDEO */
+#videoModal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+#videoModal video {
+  max-width: 90%;
+  max-height: 90%;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <img src="Srebrne_Antosie_2025.png">
+</header>
+
+<div id="bgLogo"></div>
+<div id="slider"></div>
+
+<div id="nav">
+  <button onclick="prevCategory()">⬅ Poprzednia</button>
+  <button onclick="nextCategory()">Następna ➡</button>
+</div>
+
+<!-- MODAL -->
+<div id="videoModal" onclick="closeVideo()">
+  <video controls autoplay></video>
+</div>
+
+<script>
+const categories = [
+  "Rage Roku (klip)",
+  "Smutek (klip)",
+  "Młodzieżowe Zdanie (klip)",
+  "Zająkanie się (klip)"
+];
+
+// Podmień linki na swoje np. z Cloudinary
+const clips = {
+  "Rage Roku (klip)": [
+    { thumb: "thumbs/klip1.jpg", video: "https://link-do-wideo-1.mp4" },
+    { thumb: "thumbs/klip2.jpg", video: "https://link-do-wideo-2.mp4" },
+    { thumb: "thumbs/klip3.jpg", video: "https://link-do-wideo-3.mp4" },
+    { thumb: "thumbs/klip4.jpg", video: "https://link-do-wideo-4.mp4" }
+  ],
+  "Smutek (klip)": [
+    { thumb: "thumbs/klip1.jpg", video: "https://link-do-wideo-1.mp4" },
+    { thumb: "thumbs/klip2.jpg", video: "https://link-do-wideo-2.mp4" },
+    { thumb: "thumbs/klip3.jpg", video: "https://link-do-wideo-3.mp4" },
+    { thumb: "thumbs/klip4.jpg", video: "https://link-do-wideo-4.mp4" }
+  ],
+  "Młodzieżowe Zdanie (klip)": [
+    { thumb: "thumbs/klip1.jpg", video: "https://link-do-wideo-1.mp4" },
+    { thumb: "thumbs/klip2.jpg", video: "https://link-do-wideo-2.mp4" },
+    { thumb: "thumbs/klip3.jpg", video: "https://link-do-wideo-3.mp4" },
+    { thumb: "thumbs/klip4.jpg", video: "https://link-do-wideo-4.mp4" }
+  ],
+  "Zająkanie się (klip)": [
+    { thumb: "thumbs/klip1.jpg", video: "https://link-do-wideo-1.mp4" },
+    { thumb: "thumbs/klip2.jpg", video: "https://link-do-wideo-2.mp4" },
+    { thumb: "thumbs/klip3.jpg", video: "https://link-do-wideo-3.mp4" },
+    { thumb: "thumbs/klip4.jpg", video: "https://link-do-wideo-4.mp4" }
+  ]
+};
+
+let currentIndex = 0;
+
+function renderCategory() {
+  const slider = document.getElementById("slider");
+  slider.innerHTML = "";
+
+  const cat = categories[currentIndex];
+  const div = document.createElement("div");
+  div.className = "category";
+
+  const items = clips[cat] || [];
+
+  div.innerHTML = `
+    <h2>${currentIndex + 1}/${categories.length} — ${cat}</h2>
+    <div class="grid">
+      ${items.map(item => `
+        <div class="card" onclick="openVideo('${item.video}')">
+          <img src="${item.thumb}" class="thumb">
+        </div>
+      `).join("")}
+    </div>
+  `;
+
+  slider.appendChild(div);
+}
+
+function openVideo(src) {
+  const modal = document.getElementById("videoModal");
+  const video = modal.querySelector("video");
+  video.src = src;
+  modal.style.display = "flex";
+}
+
+function closeVideo() {
+  const modal = document.getElementById("videoModal");
+  const video = modal.querySelector("video");
+  video.pause();
+  video.src = "";
+  modal.style.display = "none";
+}
+
+function nextCategory() {
+  if (currentIndex < categories.length - 1) {
+    currentIndex++;
+    renderCategory();
+  }
+}
+
+function prevCategory() {
+  if (currentIndex > 0) {
+    currentIndex--;
+    renderCategory();
+  }
+}
+
+renderCategory();
+</script>
+
+</body>
+</html>
